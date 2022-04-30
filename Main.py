@@ -15,7 +15,7 @@ def giveInitialFinalState(automate):
     return initialState
 
 def extractAutomateFromFile(): 
-    automate = open("./AFTest2.txt", "r")
+    automate = open("./AFTest3.txt", "r")
     my_list = []
     for ligne in automate: 
         my_list.append(ligne)
@@ -64,11 +64,16 @@ def main() :
         else :
             print("Cette automate n'est pas déterministe.")
             if(initialFull) : 
-                print("Cette automate est complet. Nous allons le déterminiser et après compléter l'automate obtenu.\n")
+                print("Cette automate est complet. \nNous allons le déterminiser et après compléter l'automate obtenu.\n")
             else :
-                print("Cette automate est non complet. Nous allons le déterminiser et le compléter.\n")
+                print("Cette automate est non complet. \nNous allons le déterminiser et le compléter.\n")
             #Lancer la déterminisation
+            initialAutomate.determinisation()
+            print()
 
+            #Lancer la complétion
+            initialAutomate.completion()
+            
     #Afficher l'automate
     initialAutomate.print()
 

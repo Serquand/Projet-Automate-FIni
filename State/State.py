@@ -1,6 +1,3 @@
-from enum import auto
-
-
 class State: 
     def __init__(self, initialState, finalState, automate, number, alphabet):
         self.number = number #Le numéro de l'état
