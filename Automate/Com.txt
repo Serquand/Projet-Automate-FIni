@@ -1,0 +1,31 @@
+ def printHr(self, longueur, asciiTable, maxState) :
+        line = asciiTable[8]
+        for i in range (longueur):
+            if((i == 16) or (i == 19 + max(5, maxState)) or (i == 23 + max(5, maxState))) : 
+                line += asciiTable[9]
+            else : line += asciiTable[1]
+        line += asciiTable[7]
+        print(line)
+
+    def printState(self, asciiTable, longueur, number) : 
+        line = asciiTable[3] + "       " + self.listState[number].particularity + "       " + asciiTable[3] + "   " + str(number) + "   " + asciiTable[3] + " " 
+        print(line)
+
+    def printEnd(self, longueur, asciiTable, maxState) : 
+        pass
+
+    def print(self):
+        symboleAscii = ['╔', '═', '╗', '║', '╦', '╝', '╚', '╣', '╠', '╬']
+        maxState = self.findTheMaxState()
+        longueur = 19 + (maxState + 3) * len(self.alphabet) + max(5, maxState) 
+        line = symboleAscii[0]
+        for i in range(longueur) : 
+            if((i == 16) or (i == 19 + max(5, maxState)) or (i == 23 + max(5, maxState))) : 
+                line += symboleAscii[4] 
+            else : line += symboleAscii[1]
+        line += symboleAscii[2]
+        print(line)
+        print(symboleAscii[3] + " Particularités " + symboleAscii[3] + " Etats " + symboleAscii[3] + " A " + symboleAscii[3] + " B " + symboleAscii[3])
+        self.printHr(longueur, symboleAscii, maxState)
+        self.printState(symboleAscii, longueur, 0)
+        self.printEnd()

@@ -15,7 +15,7 @@ def giveInitialFinalState(automate):
     return initialState
 
 def extractAutomateFromFile(): 
-    automate = open("./AFTest.txt", "r")
+    automate = open("./AFTest2.txt", "r")
     my_list = []
     for ligne in automate: 
         my_list.append(ligne)
@@ -37,13 +37,44 @@ def createAutomate():
     return Automate(len(alphabet), alphabet, initialState, len(initialState), finalState, len(finalState), numberState, automate)
 
 def main() :
-    AutomateFinal = createAutomate()
-    if(AutomateFinal.isAFullAF()) : print("Cette automate est complet")
-    else : print("Cette automate n'est pas complet")
-    if(AutomateFinal.isADetermAF()) : print("Cette automate est déterministe")
-    else : print("Cette automate n'est pas déterministe")
-    if(AutomateFinal.isAsynchronous()) : print("L'automate est asynchrone")
-    else : print("L'automate est synchrone")
-    AutomateFinal.print()
+    initialAutomate = createAutomate()
+    initialAutomate.print()
+
+    initialAsynchrone = initialAutomate.isAsynchronous()
+    initialDeterm = initialAutomate.isADetermAF()
+    initialFull = initialAutomate.isAFullAF()
+
+    if(initialAsynchrone) :
+        print("Cette automate est aynchrone. Nous ne possédons pas la fonction pour supprimer les epsilons-transitions.")
+        if(initialDeterm) : print("De plus, il est déterministe.")
+        else : print("De plus, il n'est pas déterministe.")
+        if(initialFull) : print("Enfin, il est complet.")
+        else : print("Enfin, il n'est pas complet.")
+        return
+    else:
+        print("\nCette automate est synchrone.")
+        if(initialDeterm) :
+            print("Cette automate est déterministe.")
+            if(initialFull) :
+                print("Cette automate est complet.\n")
+            else : 
+                print("Cette automate n'est pas complet. Nous allons le compléter.\n")
+                #Lancer la complétion
+                initialAutomate.completion()
+        else :
+            print("Cette automate n'est pas déterministe.")
+            if(initialFull) : 
+                print("Cette automate est complet. Nous allons le déterminiser et après compléter l'automate obtenu.\n")
+            else :
+                print("Cette automate est non complet. Nous allons le déterminiser et le compléter.\n")
+            #Lancer la déterminisation
+
+    #Afficher l'automate
+    initialAutomate.print()
+
+    #Lancer la minimisation
+    #Lancer la lecture de mot
+    initialAutomate.readWord()
+    
 
 main()

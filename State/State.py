@@ -1,3 +1,6 @@
+from enum import auto
+
+
 class State: 
     def __init__(self, initialState, finalState, automate, number, alphabet):
         self.number = number #Le numéro de l'état
@@ -5,7 +8,7 @@ class State:
         self.asynchronous = self.isAsynchronous()
         self.numberTransition = self.findNumberTransition(number, automate)
         self.particularity = self.setParticularity(finalState, initialState, self.number) 
-        self.transitionMatrix = self.giveTransitionMatrix()
+        self.transitionMatrix = self.giveTransitionMatrix(automate)
         self.arrayForEachTransition = self.returnArrayForEachTransition(alphabet, automate, number)
         self.isAFullState = self.isFull()
         self.isADetermState = self.isDeterm()
@@ -55,11 +58,16 @@ class State:
             if(self.arrayForEachTransition[i] > 1) : return False
         return True
 
-    def giveTransitionMatrix(self) :
+    def giveTransitionMatrix(self, automate) :
         transitionMatrix = []
         for i in self.alphabet :
             transitionMatrix.append([])
+        for i in range(len(automate) - 5) :
+            if(automate[5 + i][0] == str(self.number)): 
+                index = ord(automate[5 + i][1]) - 97
+                transitionMatrix[index].append(automate[5 + i][2])
+        return transitionMatrix
 
     #To print the state
     def __str__(self) -> str:
-        return "L'état " + str(self.number) + " est un " + str(self.particularity) + " état. De plus, il contient " + str(self.numberTransition) + " transitions."
+        return "L'état " + str(self.number) + " est un " + str(self.particularity) + " état. De plus, il contient " + str(self.numberTransition) + " transitions étant " + str(self.transitionMatrix)

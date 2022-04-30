@@ -28,35 +28,6 @@ class Automate:
             compteur += 1
         return len(str(max))
 
-    def printHr(self, longueur, asciiTable, maxState) :
-        line = asciiTable[8]
-        for i in range (longueur):
-            if((i == 16) or (i == 19 + max(5, maxState)) or (i == 23 + max(5, maxState))) : 
-                line += asciiTable[9]
-            else : line += asciiTable[1]
-        line += asciiTable[7]
-        print(line)
-
-    def printState(self, asciiTable, longueur, number) : 
-        line = asciiTable[3] + "       " + self.listState[number].particularity + "       " + asciiTable[3] + "   " + str(number) + "   " + asciiTable[3] + " " 
-        print(line)
-
-    def print(self):
-        symboleAscii = ['╔', '═', '╗', '║', '╦', '╝', '╚', '╣', '╠', '╬']
-        maxState = self.findTheMaxState()
-        longueur = 19 + (maxState + 3) * len(self.alphabet) + max(5, maxState) 
-        line = symboleAscii[0]
-        for i in range(longueur) : 
-            if((i == 16) or (i == 19 + max(5, maxState)) or (i == 23 + max(5, maxState))) : 
-                line += symboleAscii[4] 
-            else : line += symboleAscii[1]
-        line += symboleAscii[2]
-        print(line)
-        print(symboleAscii[3] + " Particularités " + symboleAscii[3] + " Etats " + symboleAscii[3] + " A " + symboleAscii[3] + " B " + symboleAscii[3])
-        self.printHr(longueur, symboleAscii, maxState)
-        self.printState(symboleAscii, longueur, 0)
-        
-
     def isAsynchronous(self) -> bool:
         for i in range (len(self.automate) - 5):
             if(self.automate[5 + i][1] == '*'): 
@@ -79,6 +50,42 @@ class Automate:
         return True
 
     def isADetermAF(self) -> bool:
+        if(int(self.automate[2][0]) != 1) : return False
         for state in self.listState:
             if(state.isADetermState == False): return False
         return True
+
+    def print(self):
+        for state in self.listState:
+            print(state)
+
+    def completion(self) : 
+        self.listState.append(State(self.initialState, self.finalState, self.automate, "P", self.alphabet))
+        for state in self.listState: 
+            for i in range(len(self.alphabet)):
+                if(state.transitionMatrix[i] == []) : state.transitionMatrix[i].append('P')
+
+    def searchInitialState(self):
+        for state in self.listState:
+            if('E' in state.particularity): 
+                return state
+
+    def searchState(self, stateToSearch): 
+        for state in self.listState:
+            if(str(state.number) == str(stateToSearch)) :
+                return state
+
+    def isAcceptedWord(self, word):
+        print("Nous allons lancer une reconnaissance sur " + word)
+        currentState = self.searchInitialState()
+        for letter in word: 
+            currentState = self.searchState(currentState.transitionMatrix[ord(letter) - 97][0])
+        if('S' in currentState.particularity) : print("Le mot est reconnu")
+        else : print("Le mot n'est pas reconnu")
+            
+
+    def readWord(self): 
+        print("\nNous lançons la fonction de lecture de mot.")
+        while(True):
+            self.isAcceptedWord(input("Entrez un mot. L'alphabet est : " + str(self.alphabet) + " et nous vous dirons si il accepté.\n"))
+            
