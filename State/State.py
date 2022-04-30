@@ -65,6 +65,12 @@ class State:
                 transitionMatrix[index].append(automate[5 + i][2])
         return transitionMatrix
 
+    def computeTransition(self) :
+        compteur = 0
+        for i in range(len(self.alphabet)):
+            compteur += len(self.transitionMatrix[i])
+        return compteur
+
     #To print the state
     def __str__(self) -> str:
-        return "L'état " + str(self.number) + " est un " + str(self.particularity) + " état. De plus, il contient " + str(self.numberTransition) + " transitions étant " + str(self.transitionMatrix)
+        return "L'état " + str(self.number) + " est un " + str(self.particularity) + " état. De plus, il contient " + str(self.computeTransition()) + " transitions étant " + str(self.transitionMatrix)

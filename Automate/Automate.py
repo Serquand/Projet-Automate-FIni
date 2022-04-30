@@ -1,12 +1,6 @@
-from gettext import translation
 from State.State import *
 
 class Automate: 
-    # longueur correspond à la taille du mot 
-    # alphabet correspond à l'alphabet utilisé par l'Automate
-    # initialState, nbInitialState, finalState, nbFinalState correspond aux nombres/états finaux/initiaux
-    # nbState correspond dans le nombre d'état
-    # automate est l'ensemble du fichier de manière à pouvoir créer les différents états
     def __init__(self, longueur, alphabet, initialState, nbInitialState, finalState, nbFinalState, nbState, automate):
         self.alphabet = alphabet #char array
         self.initialState = initialState #char array
@@ -62,7 +56,6 @@ class Automate:
                 return state
 
     def isAcceptedWord(self, word):
-        print("Nous allons lancer une reconnaissance sur " + word)
         currentState = self.searchInitialState()
         for letter in word: 
             currentState = self.searchState(currentState.transitionMatrix[ord(letter) - 97][0])
@@ -125,14 +118,10 @@ class Automate:
         return ""
 
     def finishDeterminization(self, statesToStudy): 
-        print("We will finish determinization")
         statesToStudy[0].particularity = "E"
         for state in statesToStudy:
             state.particularity += self.particularityStateDeterm(state)
         self.listState = statesToStudy
-        for state in statesToStudy:
-            print(state)
-        
 
     def determinisation(self) :
         listStateDAF = [] 
