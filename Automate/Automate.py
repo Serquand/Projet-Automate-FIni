@@ -154,3 +154,14 @@ class Automate:
                     longueur = len(listStateDAF)
                     listStateDAF[longueur - 1].transitionMatrix[letterAlphabet] = []
                     listStateDAF[longueur - 1].transitionMatrix[letterAlphabet].append(transition)
+
+    def minimisation(self) :
+        pass
+
+    def complementaire(self): 
+        print("Nous allons calculer le complémentaire")
+        for state in self.listState:
+            if('S' in state.particularity) : 
+                if('E' in state.particularity) : 
+                    state.particularity = 'E'
+                else : state.particularity = ''

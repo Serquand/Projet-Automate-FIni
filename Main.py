@@ -78,6 +78,13 @@ def main() :
     initialAutomate.print()
 
     #Lancer la minimisation
+    initialAutomate.minimisation()
+
+    #Calculer le complémentaire 
+    initialAutomate.complementaire()
+    #Afficher l'automate
+    initialAutomate.print()
+
     #Lancer la lecture de mot
     initialAutomate.readWord()
     
