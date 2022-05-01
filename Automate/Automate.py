@@ -7,6 +7,7 @@ class Automate:
         self.finalState = finalState #char array
         self.listState = self.setListState(automate) #State array
         self.automate = automate
+        self.numberColor = 2 #For minimization
 
     def isAsynchronous(self) -> bool:
         for i in range (len(self.automate) - 5):
@@ -57,10 +58,14 @@ class Automate:
 
     def isAcceptedWord(self, word):
         currentState = self.searchInitialState()
-        for letter in word: 
+        for letter in word:
             currentState = self.searchState(currentState.transitionMatrix[ord(letter) - 97][0])
-        if('S' in currentState.particularity) : print("Le mot est reconnu")
-        else : print("Le mot n'est pas reconnu")
+
+        #On a fait le complémentaire avant donc on inverse la logique
+        if('S' not in currentState.particularity) : 
+            print("Le mot est reconnu par l'automate initial et donc pas par son complémentaire")
+        else : 
+            print("Le mot n'est pas reconnu par l'automate initial et est donc reconnu par son complémentaire")
             
 
     def readWord(self): 
@@ -155,13 +160,80 @@ class Automate:
                     listStateDAF[longueur - 1].transitionMatrix[letterAlphabet] = []
                     listStateDAF[longueur - 1].transitionMatrix[letterAlphabet].append(transition)
 
+
+    def tabIsDifferent(self, oldColor) :
+        i = 0
+        for state in self.listState:
+            if(state.color != oldColor[i]) : return True
+            i += 1
+        return False
+
+    def searchNumberArray(self, transitionMatrix):
+        numberArray = []
+        for transition in transitionMatrix:
+            numberArray.append(self.searchState(transition[0]).color)
+        return numberArray
+
     def minimisation(self) :
-        pass
+        oldColor = []
+        for state in self.listState: 
+            oldColor.append(state.color)
+        for state in self.listState:
+            if('S' in state.particularity) :
+                state.color = 2
+        while(self.tabIsDifferent(oldColor)) :
+            # Nous allons commencer en assigner à oldColor les couleurs de self.listState.color
+            i = 0
+            for state in self.listState :
+                oldColor[i] = state.color
+                i += 1
+            colorMatrix = []
+            for state in self.listState:
+                colorMatrix.append(self.searchNumberArray(state.transitionMatrix))
+
+            # On regarde si il y a des états différents
+            i = 0
+            for color in colorMatrix:
+                for j in range(i):
+                    if(color != colorMatrix[j] and self.listState[i].color == self.listState[j].color):
+                        self.numberColor += 1
+                        self.listState[j].color = self.numberColor
+                        break
+                i += 1
+
+        # On va combiner les différents états
+        newListStateName = []
+        for i in range(len(self.listState)) :
+            for j in range(i) :
+                if(self.listState[i].color == self.listState[j].color) :
+                    newListStateName.append(str(self.listState[i].number) + "-" + str(self.listState[j].number))
+                    break
+            newListStateName.append(str(self.listState[i].number))
+
+        # On va créer maintenant les états et les ajouter dans un tableau
+        newListState = []
+        for stateName in newListStateName:
+            newListState.append(State(self.initialState, self.finalState, self.automate, stateName, self.alphabet))
+
+        # On va réassigner les transitions et les particularités
+        for i in range(len(newListState)):
+            stateToSearch = newListState[i].number.split("-")[0]
+            oldState = self.searchState(stateToSearch)
+            newListState[i].transitionMatrix = oldState.transitionMatrix
+            newListState[i].particularity = oldState.particularity
+
+        # On va remplacer l'ancien automate par celui venant d'être crée
+        self.listState = newListState
+
 
     def complementaire(self): 
-        print("Nous allons calculer le complémentaire")
-        for state in self.listState:
-            if('S' in state.particularity) : 
-                if('E' in state.particularity) : 
-                    state.particularity = 'E'
-                else : state.particularity = ''
+        i = 0
+        particularity = []
+        for state in self.listState :
+            particularity.append('')
+            if('ES' == state.particularity) : particularity[i] = 'E'
+            elif('S' == state.particularity) : particularity[i] = ''
+            elif('E' == state.particularity or '' ==  state.particularity) : particularity[i] = 'S'
+            i += 1
+        for j in range(i) : 
+            self.listState[j].particularity = particularity[j]

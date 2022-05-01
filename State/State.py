@@ -9,7 +9,7 @@ class State:
         self.arrayForEachTransition = self.returnArrayForEachTransition(alphabet, automate, number)
         self.isAFullState = self.isFull()
         self.isADetermState = self.isDeterm()
-        self.color = 0
+        self.color = 1
 
     # Will return the particularity (if the state is an output or an input)
     def setParticularity(self, finalState, initialState, number):
