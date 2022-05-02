@@ -248,10 +248,6 @@ class Automate:
                 state.color = matrixToAssign[i]
                 i += 1
 
-            for state in self.listState:
-                print(str(state) + " =", state.color)
-            print()
-
         # On va combiner les différents états
         numberStateFin = 0
         for state in self.listState:
@@ -266,8 +262,6 @@ class Automate:
                 if(state.color == i) :
                     currentStateName += str(state.number) + '-'
             newListStateName.append(currentStateName[:-1])
-        print("newListStateName =", newListStateName)
-
 
         # On va créer maintenant les états et les ajouter dans un tableau
         newListState = []
@@ -279,6 +273,10 @@ class Automate:
             stateToSearch = newListState[i].number.split("-")[0]
             oldState = self.searchState(stateToSearch)
             newListState[i].transitionMatrix = oldState.transitionMatrix
+            for j in range(len(self.alphabet)):
+                for listeState in newListStateName :
+                    if(newListState[i].transitionMatrix[j][0] in listeState) :
+                        newListState[i].transitionMatrix[j] = listeState
             newListState[i].particularity = oldState.particularity
 
         # On va remplacer l'ancien automate par celui venant d'être crée
