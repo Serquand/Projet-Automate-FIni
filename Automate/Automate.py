@@ -59,7 +59,7 @@ class Automate:
     def isAcceptedWord(self, word):
         currentState = self.searchInitialState()
         for letter in word:
-            currentState = self.searchState(currentState.transitionMatrix[ord(letter) - 97][0])
+            currentState = self.searchState(currentState.transitionMatrix[ord(letter) - 97])
 
         #On a fait le complémentaire avant donc on inverse la logique
         if('S' not in currentState.particularity) : 
