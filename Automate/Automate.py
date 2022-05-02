@@ -89,7 +89,32 @@ class Automate:
             for i in range(longueur) :
                 transition += self.searchState(letterState).transitionMatrix[letterAlphabet][i]
             return transition
-                    
+
+
+    def bubbleSort(self, arr):
+        n = len(arr)
+        for i in range(n-1):
+            for j in range(0, n-i-1):
+                if arr[j] > arr[j + 1] :
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]
+        return arr
+
+
+    # Génére un tableau d'entier contenant les différentes entiers de la transition
+    # Bubble sort sur ce tableau d'entier
+    # Reforme la transition
+    # Print la transition pour voir si elle est correcte
+    # Retourne la transition            
+    def bubbleSortMain(self, transition) :
+        entierTransition = []
+        for letter in transition:
+            entierTransition.append(int(letter))
+        entierTransition = self.bubbleSort(entierTransition)
+        transition = ""
+        for letter in entierTransition :
+            transition += str(letter)
+        return transition
+
     def epureTransition(self, transition) : 
         allTransition = []
         allTransition.append(transition[0])
@@ -101,6 +126,7 @@ class Automate:
         transition = ''
         for i in range(len(allTransition)) :
             transition += allTransition[i]
+        transition = self.bubbleSortMain(transition) 
         return transition
 
     def searchDontDo(self, listStateDAF) :
@@ -174,6 +200,25 @@ class Automate:
             numberArray.append(self.searchState(transition[0]).color)
         return numberArray
 
+
+    # Nous allons ajouter la condition de savoir si un autre état ayant les mêmes transitions mais pas la même couleur de base :    
+    def isInMatrix(self, color, matrixDone) :
+        for i in range (len(matrixDone)):
+            if(color == matrixDone[i]):
+                return i 
+
+        self.numberColor += 1
+        matrixDone.append(color)
+        return self.numberColor - 1
+
+    def computeColor(self, colorMatrix):
+        self.numberColor = 0
+        matrixToAssign = []
+        matrixDone = []
+        for i in range(len(colorMatrix)) : 
+            matrixToAssign.append(self.isInMatrix(colorMatrix[i], matrixDone))
+        return matrixToAssign
+
     def minimisation(self) :
         oldColor = []
         for state in self.listState: 
@@ -186,29 +231,43 @@ class Automate:
             i = 0
             for state in self.listState :
                 oldColor[i] = state.color
-                i += 1
+                i -= -1
+
+            # Nous allons ensuite créer la matrice des couleurs
             colorMatrix = []
+            i = 0
             for state in self.listState:
                 colorMatrix.append(self.searchNumberArray(state.transitionMatrix))
-
-            # On regarde si il y a des états différents
-            i = 0
-            for color in colorMatrix:
-                for j in range(i):
-                    if(color != colorMatrix[j] and self.listState[i].color == self.listState[j].color):
-                        self.numberColor += 1
-                        self.listState[j].color = self.numberColor
-                        break
+                colorMatrix[i].append(state.color)
                 i += 1
 
+            # On regarde si il y a des états différents --- BuG PROBABLE ---
+            i = 0
+            matrixToAssign = self.computeColor(colorMatrix)
+            for state in self.listState:
+                state.color = matrixToAssign[i]
+                i += 1
+
+            for state in self.listState:
+                print(str(state) + " =", state.color)
+            print()
+
         # On va combiner les différents états
+        numberStateFin = 0
+        for state in self.listState:
+            if(state.color > numberStateFin) :
+                numberStateFin = state.color
+        numberStateFin += 1
+
         newListStateName = []
-        for i in range(len(self.listState)) :
-            for j in range(i) :
-                if(self.listState[i].color == self.listState[j].color) :
-                    newListStateName.append(str(self.listState[i].number) + "-" + str(self.listState[j].number))
-                    break
-            newListStateName.append(str(self.listState[i].number))
+        for i in range(numberStateFin) :
+            currentStateName = ''
+            for state in self.listState:
+                if(state.color == i) :
+                    currentStateName += str(state.number) + '-'
+            newListStateName.append(currentStateName[:-1])
+        print("newListStateName =", newListStateName)
+
 
         # On va créer maintenant les états et les ajouter dans un tableau
         newListState = []
@@ -233,7 +292,8 @@ class Automate:
             particularity.append('')
             if('ES' == state.particularity) : particularity[i] = 'E'
             elif('S' == state.particularity) : particularity[i] = ''
-            elif('E' == state.particularity or '' ==  state.particularity) : particularity[i] = 'S'
+            elif('E' == state.particularity) : particularity[i] = 'ES'
+            else : particularity[i] = 'S'
             i += 1
         for j in range(i) : 
             self.listState[j].particularity = particularity[j]

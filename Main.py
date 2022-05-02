@@ -15,7 +15,7 @@ def giveInitialFinalState(automate):
     return initialState
 
 def extractAutomateFromFile(): 
-    automate = open("./AFTest.txt", "r")
+    automate = open("./AFTest4.txt", "r")
     my_list = []
     for ligne in automate: 
         my_list.append(ligne)
@@ -77,17 +77,20 @@ def main() :
     #Afficher l'automate déterministe complet
     print("L'automate déterministe complet est : ")
     initialAutomate.print()
+    print()
 
     #Lancer la minimisation
     initialAutomate.minimisation()
     print("\nL'automate minimaliste équivalent est : ")
     initialAutomate.print()
+    print()
 
     #Calculer le complémentaire 
     initialAutomate.complementaire()
     #Afficher l'automate
     print("\nLe complémentaire est : ")
     initialAutomate.print()
+    print()
 
     #Lancer la lecture de mot
     initialAutomate.readWord()
